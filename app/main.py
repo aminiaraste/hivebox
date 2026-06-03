@@ -16,16 +16,19 @@ SENSEBOX_IDS = [
 
 @app.get("/health")
 def health():
+    """Health check endpoint."""
     return {"status": "UP"}
 
 
 @app.get("/version")
 def get_version():
+    """Return application version."""
     return {"version": VERSION}
 
 
 @app.get("/temperature")
 def get_temperature():
+    """Return average temperature from senseBoxes."""
     temperatures = []
 
     for box_id in SENSEBOX_IDS:
@@ -33,9 +36,7 @@ def get_temperature():
         response = requests.get(url, timeout=10)
         print(response.json())
         response.raise_for_status()
-
         box = response.json()
-        
         for sensor in box.get("sensors", []):
             if sensor.get("unit") == "°C":
                 last_measurement = sensor.get("lastMeasurement")    
@@ -61,3 +62,4 @@ def get_temperature():
     average = sum(temperatures) / len(temperatures)
 
     return {"temperature": round(average, 2)}
+
