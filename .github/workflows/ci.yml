@@ -26,3 +26,14 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t hivebox .
+      
+      - name: Run Docker container
+        run: docker run -d -p 8000:8000 --name hivebox_test hivebox
+      
+      - name: Test API endpoint
+        run: |
+          sleep 5
+          curl --fail http://localhost:8000/version | grep '"version":"0.0.1"'
+      
+      - name: Stop Docker container
+        run: docker stop hivebox_test
